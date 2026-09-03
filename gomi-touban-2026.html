@@ -1,0 +1,226 @@
+<title>ごみ当番表 2026年度後期</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@400;700&display=swap">
+<style>
+  :root{
+    --paper:#f5f4ee; --sheet:#fffefa; --ink:#1e231f; --ink-soft:#606760;
+    --rule:#dedcd2; --rule-strong:#b5b5a8; --accent:#3d6b4c; --accent-ink:#2c5238;
+    --accent-soft:#e7efe7; --band:#f0efe7; --shadow:0 1px 2px rgba(30,35,31,.06),0 12px 32px -18px rgba(30,35,31,.35);
+    --jp-serif:"Zen Old Mincho",'Hiragino Mincho ProN','Yu Mincho',serif;
+    --jp-sans:"Zen Kaku Gothic New",'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12150f; --sheet:#1a1e19; --ink:#e9eae2; --ink-soft:#9ba299;
+      --rule:#2b3029; --rule-strong:#454d43; --accent:#86b98f; --accent-ink:#a8d0ae;
+      --accent-soft:#222e24; --band:#1f241d; --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12150f; --sheet:#1a1e19; --ink:#e9eae2; --ink-soft:#9ba299;
+    --rule:#2b3029; --rule-strong:#454d43; --accent:#86b98f; --accent-ink:#a8d0ae;
+    --accent-soft:#222e24; --band:#1f241d; --shadow:none;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--jp-sans);
+       font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:40px 20px 72px;}
+  .sheet{background:var(--sheet);border:1px solid var(--rule);box-shadow:var(--shadow);
+         padding:44px 40px 40px;display:flex;flex-direction:column;gap:30px;}
+
+  /* ---- masthead ---- */
+  header{display:flex;flex-direction:column;gap:10px;
+         border-bottom:2px solid var(--ink);padding-bottom:18px;}
+  .eyebrow{font-size:12px;letter-spacing:.22em;color:var(--accent-ink);font-weight:700;}
+  h1{font-family:var(--jp-serif);font-weight:700;font-size:38px;line-height:1.25;
+     margin:0;letter-spacing:.04em;text-wrap:balance;}
+  .period{font-family:var(--jp-serif);font-size:17px;color:var(--ink-soft);
+          font-variant-numeric:tabular-nums;letter-spacing:.03em;}
+
+  /* ---- rotation key ---- */
+  .key{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+       background:var(--band);border:1px solid var(--rule);padding:14px 16px;}
+  .key .lab{font-size:12px;letter-spacing:.14em;color:var(--ink-soft);font-weight:700;
+            margin-right:4px;}
+  .chip{font-variant-numeric:tabular-nums;font-weight:500;font-size:14px;
+        background:var(--sheet);border:1px solid var(--rule-strong);padding:3px 11px;}
+  .arrow{color:var(--ink-soft);font-size:13px;}
+  .loop{font-size:12px;color:var(--ink-soft);}
+
+  /* ---- main table ---- */
+  .scroller{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;min-width:520px;
+        font-variant-numeric:tabular-nums;}
+  caption{text-align:left;font-family:var(--jp-serif);font-size:19px;font-weight:700;
+          padding-bottom:12px;letter-spacing:.05em;}
+  th,td{border:1px solid var(--rule);padding:9px 10px;}
+  thead th{background:var(--band);font-size:12px;font-weight:700;letter-spacing:.16em;
+           color:var(--ink-soft);border-color:var(--rule-strong);padding-top:7px;padding-bottom:7px;}
+  thead tr:first-child th{border-bottom-style:none;}
+  td.date{white-space:nowrap;font-size:15px;}
+  td.date i{font-style:normal;color:var(--ink-soft);font-size:12px;margin-left:3px;}
+  td.room{text-align:center;font-size:18px;font-weight:500;letter-spacing:.06em;width:78px;}
+  th.cyc{background:var(--band);width:40px;padding:8px 0;border-color:var(--rule-strong);
+         vertical-align:middle;}
+  th.cyc span{display:block;writing-mode:vertical-rl;margin:0 auto;font-size:11px;
+              font-weight:700;letter-spacing:.14em;color:var(--ink-soft);white-space:nowrap;}
+  tr.grp-top td{border-top:1px solid var(--rule-strong);}
+  thead th.blank{border:none;background:none;}
+  td.mark{width:66px;border-left:none;border-right:none;border-top:none;border-bottom:none;
+          font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--accent-ink);
+          white-space:nowrap;padding-left:12px;}
+
+  tr.pause td{background:var(--band);color:var(--ink-soft);}
+  tr.pause td.room{font-family:var(--jp-sans);font-size:14px;font-weight:400;letter-spacing:.04em;}
+
+  tr.now td:not(.mark){background:var(--accent-soft);}
+  tr.now td.room{color:var(--accent-ink);font-weight:700;}
+  tr.now td:first-of-type{box-shadow:inset 3px 0 0 var(--accent);}
+
+  /* ---- reference ---- */
+  details{border-top:1px solid var(--rule);padding-top:20px;}
+  summary{cursor:pointer;font-family:var(--jp-serif);font-size:16px;font-weight:700;
+          letter-spacing:.04em;}
+  summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+  .ref{margin-top:16px;font-size:14px;color:var(--ink-soft);min-width:400px;}
+  .ref td{padding:6px 10px;}
+  .ref td.room{font-size:15px;width:70px;color:var(--ink);}
+
+  footer{border-top:1px solid var(--rule);padding-top:18px;
+         font-size:13px;color:var(--ink-soft);}
+  footer ul{margin:0;padding-left:1.15em;display:flex;flex-direction:column;gap:5px;}
+  footer b{color:var(--ink);font-weight:500;}
+
+  @media (max-width:620px){
+    .wrap{padding:16px 10px 48px;}
+    .sheet{padding:28px 18px 26px;}
+    h1{font-size:29px;}
+  }
+  @media print{
+    body{background:#fff;}
+    .wrap{padding:0;max-width:none;}
+    .sheet{border:none;box-shadow:none;padding:0;}
+    details{display:none;}
+    tr{page-break-inside:avoid;}
+  }
+</style>
+
+<div class="wrap">
+<div class="sheet">
+
+  <header>
+    <div class="eyebrow">学生寮　共用部</div>
+    <h1>ごみ当番表</h1>
+    <div class="period">2026年度 後期　9月28日 — 2027年3月31日</div>
+  </header>
+
+  <div class="key">
+    <span class="lab">当番の順</span>
+    <span class="chip">101・102</span><span class="arrow">→</span>
+    <span class="chip">103・104</span><span class="arrow">→</span>
+    <span class="chip">107・108</span><span class="arrow">→</span>
+    <span class="chip">115・116</span><span class="arrow">→</span>
+    <span class="chip">117・118</span>
+    <span class="loop">の順に繰り返し</span>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <caption>後期の当番（月曜 — 日曜）</caption>
+      <colgroup><col><col><col><col><col><col></colgroup>
+      <thead>
+        <tr><th rowspan="2" class="cyc"></th><th colspan="2">日 程</th><th colspan="2">部 屋 番 号</th><th class="blank"></th></tr>
+        <tr><th>開始</th><th>終了</th><th></th><th></th><th class="blank"></th></tr>
+      </thead>
+      <tbody id="rows">
+<tr class='grp-top' data-from="2026-09-28" data-to="2026-10-04"><th class="cyc" scope="rowgroup" rowspan="5"><span>第1巡</span></th><td class="date">9月28日<i>(月)</i></td><td class="date">10月4日<i>(日)</i></td><td class="room">101</td><td class="room">102</td><td class="mark"></td></tr>
+<tr data-from="2026-10-05" data-to="2026-10-11"><td class="date">10月5日<i>(月)</i></td><td class="date">10月11日<i>(日)</i></td><td class="room">103</td><td class="room">104</td><td class="mark"></td></tr>
+<tr data-from="2026-10-12" data-to="2026-10-18"><td class="date">10月12日<i>(月)</i></td><td class="date">10月18日<i>(日)</i></td><td class="room">107</td><td class="room">108</td><td class="mark"></td></tr>
+<tr data-from="2026-10-19" data-to="2026-10-25"><td class="date">10月19日<i>(月)</i></td><td class="date">10月25日<i>(日)</i></td><td class="room">115</td><td class="room">116</td><td class="mark"></td></tr>
+<tr data-from="2026-10-26" data-to="2026-11-01"><td class="date">10月26日<i>(月)</i></td><td class="date">11月1日<i>(日)</i></td><td class="room">117</td><td class="room">118</td><td class="mark"></td></tr>
+<tr class='grp-top' data-from="2026-11-02" data-to="2026-11-08"><th class="cyc" scope="rowgroup" rowspan="5"><span>第2巡</span></th><td class="date">11月2日<i>(月)</i></td><td class="date">11月8日<i>(日)</i></td><td class="room">101</td><td class="room">102</td><td class="mark"></td></tr>
+<tr data-from="2026-11-09" data-to="2026-11-15"><td class="date">11月9日<i>(月)</i></td><td class="date">11月15日<i>(日)</i></td><td class="room">103</td><td class="room">104</td><td class="mark"></td></tr>
+<tr data-from="2026-11-16" data-to="2026-11-22"><td class="date">11月16日<i>(月)</i></td><td class="date">11月22日<i>(日)</i></td><td class="room">107</td><td class="room">108</td><td class="mark"></td></tr>
+<tr data-from="2026-11-23" data-to="2026-11-29"><td class="date">11月23日<i>(月)</i></td><td class="date">11月29日<i>(日)</i></td><td class="room">115</td><td class="room">116</td><td class="mark"></td></tr>
+<tr data-from="2026-11-30" data-to="2026-12-06"><td class="date">11月30日<i>(月)</i></td><td class="date">12月6日<i>(日)</i></td><td class="room">117</td><td class="room">118</td><td class="mark"></td></tr>
+<tr class='grp-top' data-from="2026-12-07" data-to="2026-12-13"><th class="cyc" scope="rowgroup" rowspan="6"><span>第3巡</span></th><td class="date">12月7日<i>(月)</i></td><td class="date">12月13日<i>(日)</i></td><td class="room">101</td><td class="room">102</td><td class="mark"></td></tr>
+<tr data-from="2026-12-14" data-to="2026-12-20"><td class="date">12月14日<i>(月)</i></td><td class="date">12月20日<i>(日)</i></td><td class="room">103</td><td class="room">104</td><td class="mark"></td></tr>
+<tr class="pause" data-from="2026-12-21" data-to="2027-01-03"><td class="date">12月21日<i>(月)</i></td><td class="date">1月3日<i>(日)</i></td><td class="room" colspan="2">年末年始のため休止</td><td class="mark"></td></tr>
+<tr data-from="2027-01-04" data-to="2027-01-10"><td class="date">1月4日<i>(月)</i></td><td class="date">1月10日<i>(日)</i></td><td class="room">107</td><td class="room">108</td><td class="mark"></td></tr>
+<tr data-from="2027-01-11" data-to="2027-01-17"><td class="date">1月11日<i>(月)</i></td><td class="date">1月17日<i>(日)</i></td><td class="room">115</td><td class="room">116</td><td class="mark"></td></tr>
+<tr data-from="2027-01-18" data-to="2027-01-24"><td class="date">1月18日<i>(月)</i></td><td class="date">1月24日<i>(日)</i></td><td class="room">117</td><td class="room">118</td><td class="mark"></td></tr>
+<tr class='grp-top' data-from="2027-01-25" data-to="2027-01-31"><th class="cyc" scope="rowgroup" rowspan="5"><span>第4巡</span></th><td class="date">1月25日<i>(月)</i></td><td class="date">1月31日<i>(日)</i></td><td class="room">101</td><td class="room">102</td><td class="mark"></td></tr>
+<tr data-from="2027-02-01" data-to="2027-02-07"><td class="date">2月1日<i>(月)</i></td><td class="date">2月7日<i>(日)</i></td><td class="room">103</td><td class="room">104</td><td class="mark"></td></tr>
+<tr data-from="2027-02-08" data-to="2027-02-14"><td class="date">2月8日<i>(月)</i></td><td class="date">2月14日<i>(日)</i></td><td class="room">107</td><td class="room">108</td><td class="mark"></td></tr>
+<tr data-from="2027-02-15" data-to="2027-02-21"><td class="date">2月15日<i>(月)</i></td><td class="date">2月21日<i>(日)</i></td><td class="room">115</td><td class="room">116</td><td class="mark"></td></tr>
+<tr data-from="2027-02-22" data-to="2027-02-28"><td class="date">2月22日<i>(月)</i></td><td class="date">2月28日<i>(日)</i></td><td class="room">117</td><td class="room">118</td><td class="mark"></td></tr>
+<tr class='grp-top' data-from="2027-03-01" data-to="2027-03-07"><th class="cyc" scope="rowgroup" rowspan="5"><span>第5巡</span></th><td class="date">3月1日<i>(月)</i></td><td class="date">3月7日<i>(日)</i></td><td class="room">101</td><td class="room">102</td><td class="mark"></td></tr>
+<tr data-from="2027-03-08" data-to="2027-03-14"><td class="date">3月8日<i>(月)</i></td><td class="date">3月14日<i>(日)</i></td><td class="room">103</td><td class="room">104</td><td class="mark"></td></tr>
+<tr data-from="2027-03-15" data-to="2027-03-21"><td class="date">3月15日<i>(月)</i></td><td class="date">3月21日<i>(日)</i></td><td class="room">107</td><td class="room">108</td><td class="mark"></td></tr>
+<tr data-from="2027-03-22" data-to="2027-03-28"><td class="date">3月22日<i>(月)</i></td><td class="date">3月28日<i>(日)</i></td><td class="room">115</td><td class="room">116</td><td class="mark"></td></tr>
+<tr data-from="2027-03-29" data-to="2027-03-31"><td class="date">3月29日<i>(月)</i></td><td class="date">3月31日<i>(水)</i></td><td class="room">117</td><td class="room">118</td><td class="mark"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details>
+    <summary>前期の当番（4月13日 — 7月29日・実施済み）</summary>
+    <div class="scroller">
+      <table class="ref">
+        <thead>
+          <tr><th colspan="2">日 程</th><th colspan="2">部 屋 番 号</th></tr>
+        </thead>
+        <tbody>
+<tr><td>4月13日</td><td>4月19日</td><td class="room">101</td><td class="room">102</td></tr>
+<tr><td>4月20日</td><td>4月26日</td><td class="room">103</td><td class="room">104</td></tr>
+<tr><td>4月27日</td><td>5月1日</td><td class="room">107</td><td class="room">108</td></tr>
+<tr><td>5月11日</td><td>5月17日</td><td class="room">115</td><td class="room">116</td></tr>
+<tr><td>5月18日</td><td>5月24日</td><td class="room">117</td><td class="room">118</td></tr>
+<tr><td>5月25日</td><td>5月31日</td><td class="room">101</td><td class="room">102</td></tr>
+<tr><td>6月1日</td><td>6月7日</td><td class="room">103</td><td class="room">104</td></tr>
+<tr><td>6月8日</td><td>6月14日</td><td class="room">107</td><td class="room">108</td></tr>
+<tr><td>6月15日</td><td>6月21日</td><td class="room">115</td><td class="room">116</td></tr>
+<tr><td>6月22日</td><td>6月28日</td><td class="room">117</td><td class="room">118</td></tr>
+<tr><td>6月29日</td><td>7月5日</td><td class="room">101</td><td class="room">102</td></tr>
+<tr><td>7月6日</td><td>7月12日</td><td class="room">103</td><td class="room">104</td></tr>
+<tr><td>7月13日</td><td>7月19日</td><td class="room">107</td><td class="room">108</td></tr>
+<tr><td>7月20日</td><td>7月26日</td><td class="room">115</td><td class="room">116</td></tr>
+<tr><td>7月27日</td><td>7月29日</td><td class="room">117</td><td class="room">118</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <footer>
+    <ul>
+      <li>当番の期間は<b>月曜日から日曜日まで</b>。ごみ出し日の朝までに、共用部のごみをまとめて集積所へ出してください。</li>
+      <li><b>12月21日 — 1月3日は年末年始のため休止</b>。1月4日の週から、休止前の続き（107・108）で再開します。</li>
+      <li>最終週は年度末に合わせて<b>3月29日 — 3月31日</b>の3日間です。</li>
+      <li>当番を代わってもらったときは、この表に書き込んでおいてください。</li>
+    </ul>
+  </footer>
+
+</div>
+</div>
+
+<script>
+(function () {
+  var today = new Date();
+  var iso = today.getFullYear() + "-" +
+            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+            String(today.getDate()).padStart(2, "0");
+  var rows = document.querySelectorAll("#rows tr");
+  var current = null, next = null;
+  rows.forEach(function (tr) {
+    var from = tr.dataset.from, to = tr.dataset.to;
+    if (iso >= from && iso <= to) current = tr;
+    if (!next && iso < from) next = tr;
+  });
+  var target = current || next;
+  if (!target) return;
+  target.classList.add("now");
+  var mark = target.querySelector("td.mark");
+  if (mark) mark.textContent = current ? "今週の当番" : "次の当番";
+})();
+</script>
