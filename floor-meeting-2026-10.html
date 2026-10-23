@@ -1,202 +1,200 @@
 <title>10月フロアミーティング資料</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
 <style>
   :root{
-    --paper:#f5f4ee; --sheet:#fffefa; --ink:#1e231f; --ink-soft:#5f6660;
-    --rule:#dedcd2; --rule-strong:#b5b5a8; --band:#f0efe7;
-    --accent:#3d6b4c; --accent-ink:#2c5238; --accent-soft:#e7efe7;
-    --alert:#a9552c; --alert-ink:#8d4522; --alert-soft:#f7e9e0;
-    --shadow:0 1px 2px rgba(30,35,31,.06),0 12px 32px -18px rgba(30,35,31,.35);
-    --jp-serif:"Zen Old Mincho",'Hiragino Mincho ProN','Yu Mincho',serif;
-    --jp-sans:"Zen Kaku Gothic New",'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+    --desk:#e9eaec; --page:#ffffff; --ink:#1a1a1a;
+    --navy:#1f4e79; --blue:#2e75b6; --red:#c00000;
+    --warn-bg:#fdeaea; --cell:#f2f2f2; --border:#bfbfbf;
+    --gothic:"Noto Sans JP",'Yu Gothic','Hiragino Kaku Gothic ProN','Meiryo',sans-serif;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --paper:#12150f; --sheet:#1a1e19; --ink:#e9eae2; --ink-soft:#9ba299;
-      --rule:#2b3029; --rule-strong:#454d43; --band:#1f241d;
-      --accent:#86b98f; --accent-ink:#a8d0ae; --accent-soft:#222e24;
-      --alert:#d9916a; --alert-ink:#e5a884; --alert-soft:#2e211a;
-      --shadow:none;
-    }
-  }
-  :root[data-theme="dark"]{
-    --paper:#12150f; --sheet:#1a1e19; --ink:#e9eae2; --ink-soft:#9ba299;
-    --rule:#2b3029; --rule-strong:#454d43; --band:#1f241d;
-    --accent:#86b98f; --accent-ink:#a8d0ae; --accent-soft:#222e24;
-    --alert:#d9916a; --alert-ink:#e5a884; --alert-soft:#2e211a;
-    --shadow:none;
-  }
+  body{background:var(--desk);color:var(--ink);font-family:var(--gothic);
+       font-size:14.5px;line-height:1.85;-webkit-font-smoothing:antialiased;}
+  .desk{padding:32px 14px 60px;}
+  .page{background:var(--page);color:var(--ink);border:1px solid var(--border);
+        box-shadow:0 2px 4px rgba(0,0,0,.07),0 20px 48px -26px rgba(0,0,0,.5);
+        max-width:760px;margin:0 auto;padding:52px 56px 56px;}
 
-  body{background:var(--paper);color:var(--ink);font-family:var(--jp-sans);
-       font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:760px;margin:0 auto;padding:40px 20px 72px;}
-  .sheet{background:var(--sheet);border:1px solid var(--rule);box-shadow:var(--shadow);
-         padding:46px 44px 40px;display:flex;flex-direction:column;gap:34px;}
+  h1{font-size:24px;font-weight:700;color:var(--navy);text-align:center;
+     margin:0 0 34px;letter-spacing:.04em;line-height:1.5;text-wrap:balance;}
 
-  header{display:flex;flex-direction:column;gap:9px;
-         border-bottom:2px solid var(--ink);padding-bottom:18px;}
-  .eyebrow{font-size:12px;letter-spacing:.24em;color:var(--accent-ink);font-weight:700;}
-  h1{font-family:var(--jp-serif);font-weight:700;font-size:36px;line-height:1.3;
-     margin:0;letter-spacing:.04em;text-wrap:balance;}
-  .source{font-size:13px;color:var(--ink-soft);line-height:1.7;}
-  .lede{font-size:15px;line-height:1.9;margin:0;}
-  .lede b{color:var(--accent-ink);font-weight:700;}
+  h2{font-size:20px;font-weight:700;color:var(--navy);margin:0 0 10px;
+     padding-bottom:5px;border-bottom:2.5px solid var(--navy);letter-spacing:.02em;}
+  h3{font-size:16px;font-weight:700;color:var(--blue);margin:0 0 10px;
+     padding-bottom:4px;border-bottom:1.5px solid var(--blue);letter-spacing:.02em;}
+  h4{font-size:15px;font-weight:700;color:var(--navy);margin:0 0 10px;
+     padding-bottom:4px;border-bottom:1.5px solid var(--navy);letter-spacing:.02em;}
 
-  section{display:flex;flex-direction:column;gap:22px;}
-  h2{font-family:var(--jp-serif);font-size:21px;font-weight:700;margin:0;
-     letter-spacing:.06em;display:flex;align-items:baseline;gap:12px;}
-  h2 small{font-family:var(--jp-sans);font-size:12px;font-weight:400;
-           letter-spacing:.1em;color:var(--ink-soft);}
+  .sec{margin:0 0 34px;}
+  .sub{margin:0 0 26px;}
+  .lead{font-size:14px;font-weight:700;margin:0 0 22px;}
+  p{margin:0 0 10px;}
+  p:last-child{margin-bottom:0;}
 
-  .item{border-top:1px solid var(--rule);padding-top:16px;
-        display:flex;flex-direction:column;gap:9px;}
-  .item:first-of-type{border-top-color:var(--rule-strong);}
-  .tag{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.14em;
-       padding:3px 9px;background:var(--band);color:var(--ink-soft);
-       border:1px solid var(--rule-strong);}
-  .tag.warn{background:var(--alert-soft);color:var(--alert-ink);border-color:var(--alert);}
-  .tag.new{background:var(--accent-soft);color:var(--accent-ink);border-color:var(--accent);}
-  h3{font-size:18px;font-weight:700;margin:0;line-height:1.5;letter-spacing:.02em;}
-  .item p{margin:0;}
-  .item ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;}
-  .item li::marker{color:var(--accent);}
-  .why{font-size:13px;color:var(--ink-soft);}
+  .lbl{font-size:14px;font-weight:700;margin:0 0 4px;}
+  .lbl.alert{color:var(--red);}
 
-  .memo{display:flex;align-items:baseline;gap:10px;font-size:13px;color:var(--ink-soft);
-        border:1px dashed var(--rule-strong);padding:9px 12px;background:var(--band);}
-  .memo span{flex:1;border-bottom:1px solid var(--rule-strong);min-height:1.4em;}
+  ul{list-style:none;margin:0 0 14px;padding:0 0 0 14px;
+     display:flex;flex-direction:column;gap:3px;}
+  ul:last-child{margin-bottom:0;}
+  li{position:relative;padding-left:20px;font-size:14.5px;line-height:1.8;}
+  li::before{content:"●";position:absolute;left:0;top:0;color:var(--blue);font-size:10px;
+             line-height:2.6;}
+  li b{font-weight:700;}
+  li .red{color:var(--red);font-weight:700;}
 
-  .scroller{overflow-x:auto;}
-  table{border-collapse:collapse;width:100%;min-width:460px;
-        font-variant-numeric:tabular-nums;}
-  th,td{border:1px solid var(--rule);padding:11px 12px;text-align:left;
-        vertical-align:top;}
-  thead th{background:var(--band);font-size:12px;font-weight:700;letter-spacing:.16em;
-           color:var(--ink-soft);border-color:var(--rule-strong);
-           padding-top:7px;padding-bottom:7px;}
-  td.when{white-space:nowrap;font-size:15px;font-weight:500;width:34%;}
-  td.when i{font-style:normal;display:block;font-size:12px;color:var(--ink-soft);
-            font-weight:400;letter-spacing:.04em;}
-  td.what b{display:block;font-size:15px;font-weight:700;}
-  td.what span{font-size:13px;color:var(--ink-soft);}
+  .warn{background:var(--warn-bg);border-top:2.5px solid var(--red);
+        border-bottom:2.5px solid var(--red);padding:14px 16px;margin:22px 0 30px;
+        color:var(--red);font-weight:700;font-size:14.5px;line-height:1.8;}
 
-  footer{border-top:1px solid var(--rule);padding-top:18px;
-         font-size:13px;color:var(--ink-soft);}
-  footer b{color:var(--ink);font-weight:500;}
+  .scroller{overflow-x:auto;margin:0 0 14px;}
+  table{border-collapse:collapse;width:100%;min-width:460px;}
+  th,td{border:1px solid var(--border);padding:9px 13px;text-align:left;
+        vertical-align:top;font-size:14.5px;}
+  th{background:var(--cell);font-weight:700;width:30%;white-space:nowrap;}
+  td .red{color:var(--red);font-weight:700;}
 
-  @media (max-width:620px){
-    .wrap{padding:16px 10px 48px;}
-    .sheet{padding:28px 18px 26px;gap:28px;}
-    h1{font-size:28px;}
-    h2{font-size:19px;flex-direction:column;gap:2px;}
+  .closing{text-align:center;font-weight:700;margin:44px 0 0;color:var(--ink);}
+
+  @media (max-width:640px){
+    .desk{padding:10px 7px 40px;}
+    .page{padding:30px 20px 34px;}
+    h1{font-size:20px;} h2{font-size:17.5px;} h3{font-size:15px;} h4{font-size:14.5px;}
+    body{font-size:14px;}
+    th{white-space:normal;}
   }
   @media print{
-    body{background:#fff;}
-    .wrap{padding:0;max-width:none;}
-    .sheet{border:none;box-shadow:none;padding:0;gap:26px;}
-    .item,tr,section{page-break-inside:avoid;}
+    @page{size:A4;margin:18mm 16mm;}
+    body{background:#fff;font-size:10.5pt;}
+    .desk{padding:0;}
+    .page{box-shadow:none;border:none;max-width:none;padding:0;}
+    .sub,.warn,table{break-inside:avoid;}
+    h2,h3,h4{break-after:avoid;}
+    h1{font-size:19px;margin-bottom:22px;}
+    h2{font-size:16.5px;} h3{font-size:14px;} h4{font-size:13.5px;}
+    .sec{margin-bottom:20px;} .sub{margin-bottom:16px;}
+    li,th,td{font-size:12.5px;line-height:1.65;}
+    .lead,.lbl{font-size:12.5px;}
+    .warn{font-size:12.5px;margin:16px 0 20px;padding:11px 13px;}
+    .closing{margin-top:28px;}
   }
 </style>
 
-<div class="wrap">
-<div class="sheet">
+<div class="desk">
+<div class="page">
 
-  <header>
-    <div class="eyebrow">東大宮学生寮</div>
-    <h1>10月フロアミーティング資料</h1>
-    <div class="source">2026年10月15日（木）RAミーティングより<br>学生課・管理課・寮管理人さん・エスアイテックさん・共立メンテナンスさんからの連絡をまとめたものです。</div>
-  </header>
+  <h1>東大宮学生寮　10月フロアミーティング資料</h1>
 
-  <p class="lede">今月は<b>ごみの出し方</b>と<b>自転車の施錠</b>について、寮の外からも指摘が出ています。どちらも一人が守らないと寮全体に影響が出るものなので、協力をお願いします。</p>
+  <div class="sec">
+    <h2>1. 生活マナーについての共有事項</h2>
+    <p class="lead">以下4点について、現状の問題点と今後の厳守事項を伝達する。全員必ず確認し、実行すること。</p>
 
-  <section>
-    <h2>お願いしたいこと<small>今月の注意事項</small></h2>
-
-    <div class="item">
-      <div class="tag new">10月から</div>
-      <h3>ごみの分別を徹底してください</h3>
-      <p>10月から、ごみの分別を徹底するよう共立メンテナンスさんより依頼がありました。これまで何となく捨てていたものも、捨てる前に区分を確認してください。</p>
-      <div class="memo">分別区分の掲示場所<span></span></div>
-    </div>
-
-    <div class="item">
-      <div class="tag warn">再度のお願い</div>
-      <h3>ミニキッチンの三角コーナーを放置しないでください</h3>
-      <p>先月も同じ指摘がありましたが、改善されていません。ミーティング前日の時点でもミニキッチンが汚れたままでした。</p>
+    <div class="sub">
+      <h3>① ゴミの分別・ゴミ置き場について</h3>
+      <p class="lbl">【現状】</p>
       <ul>
-        <li>生ごみは必ず三角コーナーへ。<b>そのまま流さないでください。</b></li>
-        <li>使い終わったら三角コーナーの中身を捨て、流しを流してください。</li>
+        <li>10月より、ゴミの分別を徹底するよう共立メンテナンスさんから依頼があった</li>
+        <li>ゴミ置き場のネットが新しいものに交換された</li>
       </ul>
-      <p class="why">生ごみをそのまま流したことで、実際に排水溝が詰まりました。虫が発生する原因にもなります。</p>
-    </div>
-
-    <div class="item">
-      <div class="tag warn">被害が出ています</div>
-      <h3>自転車には必ず鍵をかけてください</h3>
-      <p>施錠されていない自転車が5〜6台ありました。そのうち、鍵のかかっていなかった自転車が無断で使われる被害が起きています。</p>
+      <p class="lbl alert">【厳守事項】</p>
       <ul>
-        <li>施錠していなかった場合の被害は<b>自己責任</b>となります。短時間でも必ず鍵を。</li>
-        <li>登録ステッカーが古いままの自転車は、RAが写真を撮って学生課へ報告します。自分のステッカーを一度確認してください。</li>
-        <li>乗らなくなった自転車は、放置せず早めに処分してください。</li>
+        <li>分別ルールは必ず守ること。<span class="red">捨てる前に分別区分を必ず確認すること</span></li>
+        <li>分別区分は（　　　　　　　）に掲示している。判断に迷う場合は確認してから捨てること</li>
+        <li>新しいゴミネットは、引っかけたり引きずったりすると破れる。丁寧に扱うこと</li>
       </ul>
     </div>
 
-    <div class="item">
-      <div class="tag">継続</div>
-      <h3>夜間の騒音・通話に気をつけてください</h3>
-      <p>夜間の騒音と、夜間の電話について指摘がありました。自室での通話でも、話し声は廊下や隣室に思ったより響きます。夜は声の大きさと時間帯に配慮をお願いします。</p>
+    <div class="sub">
+      <h3>② ミニキッチン・三角コーナーの使い方について</h3>
+      <p class="lbl">【現状】</p>
+      <ul>
+        <li>三角コーナーが汚れたまま放置されているとの指摘が、<b>先月に続いて</b>出ている</li>
+        <li>ミーティング前日の時点でも、ミニキッチンが汚れたままの状態であった</li>
+        <li>生ゴミをそのまま流したことが原因で、排水溝が詰まる問題が発生した</li>
+      </ul>
+      <p class="lbl alert">【厳守事項】</p>
+      <ul>
+        <li>生ゴミは必ず三角コーナーに入れること。<span class="red">そのまま流すことは厳禁</span></li>
+        <li>使用後は三角コーナーの中身を捨て、流しを洗い流すこと。後回しは厳禁</li>
+        <li>虫が発生する原因となる。次に使う人が気持ちよく使える状態か確認してから退出すること</li>
+      </ul>
     </div>
-  </section>
 
-  <section>
-    <h2>お知らせ<small>対応済み・設備について</small></h2>
-
-    <div class="item">
-      <div class="tag">対応済み</div>
-      <h3>蜂の巣はエスアイテックさんが駆除しました</h3>
-      <p>寮内で見つかっていた蜂の巣は処理済みです。新しい巣を見かけたらRAまで知らせてください。</p>
+    <div class="sub">
+      <h3>③ 自転車の施錠について</h3>
+      <p class="lbl">【現状】</p>
+      <ul>
+        <li>施錠されていない自転車が5〜6台確認されている</li>
+        <li>鍵のかかっていなかった自転車が、<b>無断で使用される被害が発生している</b></li>
+        <li>登録ステッカーが古いままの自転車が確認されている</li>
+      </ul>
+      <p class="lbl alert">【厳守事項】</p>
+      <ul>
+        <li>短時間の駐輪であっても必ず施錠すること。<span class="red">施錠していなかった場合は自己責任となる</span></li>
+        <li>自分の自転車の登録ステッカーを確認すること。古いものはRAが写真を撮影し学生課へ報告する</li>
+        <li>乗らなくなった自転車は放置せず、早めに処分すること</li>
+      </ul>
     </div>
 
-    <div class="item">
-      <div class="tag">設備</div>
-      <h3>新しいごみネットが設置されました</h3>
-      <p>ごみ置き場のネットが新しくなりました。引っかけたり引きずったりすると破れてしまうので、丁寧に扱ってください。</p>
+    <div class="sub">
+      <h3>④ 夜間の騒音・通話について</h3>
+      <p class="lbl">【現状】</p>
+      <ul>
+        <li>夜間の騒音、および夜間の電話について指摘が出ている</li>
+      </ul>
+      <p class="lbl alert">【厳守事項】</p>
+      <ul>
+        <li>自室での通話であっても、話し声は廊下や隣室に響くことを自覚すること</li>
+        <li>夜間は声の大きさと時間帯に十分配慮すること</li>
+      </ul>
     </div>
-  </section>
 
-  <section>
-    <h2>これからの予定<small>カレンダーに入れてください</small></h2>
-    <div class="scroller">
-      <table>
-        <thead>
-          <tr><th>日 時</th><th>内 容</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="when">11月10日（火）<i>12:40 — 13:10</i></td>
-            <td class="what"><b>大宮キャンパス 防火・防災訓練</b>
-              <span>寮の防災訓練を欠席した人は、こちらに参加してください。</span></td>
-          </tr>
-          <tr>
-            <td class="when">12月12日（土）<i>9:30 —</i></td>
-            <td class="what"><b>年末大掃除</b>
-              <span>寮生全員での作業です。早めに予定を空けておいてください。</span></td>
-          </tr>
-          <tr>
-            <td class="when">日程は追って連絡</td>
-            <td class="what"><b>クリーン作戦</b>
-              <span>こちらも出席をお願いします。日程が決まり次第お知らせします。</span></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="warn">
+      【警告】ミニキッチン・三角コーナーについては、先月の周知後も改善が見られていない。次回も同様の指摘が続く場合は、管理課・学生課と今後の対応を検討する。
     </div>
-  </section>
 
-  <footer>
-    次回のフロアミーティングは<b>11月</b>を予定しています。生活の中で困っていること、設備の不具合、気づいたことがあれば、ミーティングを待たずに<b>RAまで</b>知らせてください。
-  </footer>
+    <h4>全体を通して</h4>
+    <p>以上はいずれも、最低限のマナーを守れば防げる問題である。</p>
+    <p>共同生活である以上、一人の怠慢が寮全体に迷惑をかけることを全員が自覚すること。</p>
+  </div>
+
+  <div class="sec">
+    <h2>2. 今後の行事について</h2>
+
+    <div class="sub">
+      <h4>■ 行事予定</h4>
+      <div class="scroller">
+        <table>
+          <tbody>
+            <tr><th>11月10日(火)</th><td><b>大宮キャンパス　防火・防災訓練</b>　12:40 〜 13:10</td></tr>
+            <tr><th>12月12日(土)</th><td><b>年末大掃除</b>　<span class="red">午前9時30分 〜</span></td></tr>
+            <tr><th>日程未定</th><td><b>クリーン作戦（12月の回）</b>　決まり次第連絡する</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h4>■ 参加について（必読）</h4>
+      <ul>
+        <li><span class="red">寮の防災訓練を欠席した者は、11月10日の大宮キャンパス防火・防災訓練に必ず参加すること</span></li>
+        <li>年末大掃除は寮生全員での作業である。早めに予定を空けておくこと</li>
+        <li>クリーン作戦は5月と12月の年2回実施され、いずれか必ず1回の参加が義務である。<b>5月の回に参加していない者は、12月の回に必ず参加すること</b></li>
+        <li>やむを得ない事情がある場合は、事前にリーダーへ申し出ること</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>3. その他の連絡事項</h2>
+    <ul>
+      <li>寮内で見つかっていた蜂の巣は、エスアイテックさんにより駆除済みである。新しい巣を見かけた場合は、近づかずにRAまで知らせること</li>
+      <li>設備の不具合や生活上の困りごとは、ミーティングを待たずにRAまで連絡すること</li>
+    </ul>
+  </div>
+
+  <p class="closing">以上、全員の協力をお願いします。</p>
 
 </div>
 </div>
