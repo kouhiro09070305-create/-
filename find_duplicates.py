@@ -13,6 +13,9 @@
 使い方（ターミナル / コマンドプロンプトで実行します）:
     python find_duplicates.py 調べたいフォルダ
     python find_duplicates.py 調べたいフォルダ --csv 結果.csv
+    python find_duplicates.py 調べたいフォルダ --pdf 結果.pdf   （PDF も作る場合）
+
+    ※ PDF を作るときだけ、先に「pip install reportlab」でライブラリを入れてください。
 
 例:
     python find_duplicates.py C:\\Users\\taro\\Pictures
@@ -225,6 +228,158 @@ def save_csv(groups, csv_path):
     print(f"CSV ファイルに保存しました: {csv_path}")
 
 
+# PDF で日本語を表示するためのフォント候補（上から順に探して、最初に見つかったものを使います）。
+# Windows・Mac・Linux それぞれに標準で入っていることが多いフォントを並べています。
+JAPANESE_FONT_CANDIDATES = [
+    r"C:\Windows\Fonts\meiryo.ttc",  # Windows: メイリオ
+    r"C:\Windows\Fonts\msgothic.ttc",  # Windows: MS ゴシック
+    "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc",  # Mac: ヒラギノ角ゴシック
+    "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",  # Linux: IPA ゴシック
+    "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",  # Linux: 日本語ゴシック
+]
+
+
+def register_japanese_font():
+    """
+    PDF 用の日本語フォントを登録して、そのフォント名を返します。
+    パソコンにあるフォントが見つからなければ、reportlab に内蔵の日本語フォントを使います。
+    """
+    # reportlab は PDF を作るための外部ライブラリです（pip install reportlab で入ります）。
+    # PDF を作るときだけ必要なので、ここで読み込みます。
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+    from reportlab.pdfbase.ttfonts import TTFont
+
+    for font_path in JAPANESE_FONT_CANDIDATES:
+        if os.path.exists(font_path):
+            try:
+                # .ttc ファイルには複数のフォントが入っているので、1番目（0番）を使います
+                pdfmetrics.registerFont(TTFont("JapaneseFont", font_path, subfontIndex=0))
+                return "JapaneseFont"
+            except Exception:
+                # 形式が合わないフォントだった場合は、次の候補を試します
+                continue
+
+    # どれも見つからなかったときの予備（ほとんどの PDF ビューアで表示できます）
+    pdfmetrics.registerFont(UnicodeCIDFont("HeiseiKakuGo-W5"))
+    return "HeiseiKakuGo-W5"
+
+
+def save_pdf(groups, pdf_path, folder):
+    """重複ファイルの一覧を PDF ファイルに保存します。"""
+    try:
+        from reportlab.lib import colors
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import ParagraphStyle
+        from reportlab.lib.units import mm
+        from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    except ImportError:
+        print("[エラー] PDF を作るには reportlab が必要です。次のコマンドでインストールしてください:")
+        print("    pip install reportlab")
+        return
+
+    font = register_japanese_font()
+
+    # 文字の見た目（スタイル）を用意します。
+    # wordWrap="CJK" にすると、スペースのない長いパスでも途中で折り返してくれます。
+    title_style = ParagraphStyle("title", fontName=font, fontSize=18, leading=24)
+    heading_style = ParagraphStyle("heading", fontName=font, fontSize=13, leading=18)
+    body_style = ParagraphStyle("body", fontName=font, fontSize=9.5, leading=14, wordWrap="CJK")
+    cell_style = ParagraphStyle("cell", fontName=font, fontSize=8.5, leading=11, wordWrap="CJK")
+
+    # 表の共通デザイン（枠線・見出し行の色など）
+    def table_style(number_columns):
+        style = [
+            ("FONTNAME", (0, 0), (-1, -1), font),
+            ("FONTSIZE", (0, 0), (-1, -1), 8.5),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EEF4")),  # 見出し行の背景色
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9AA5B1")),  # 枠線
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]
+        # 数字の列は右寄せにすると読みやすくなります
+        for column in number_columns:
+            style.append(("ALIGN", (column, 1), (column, -1), "RIGHT"))
+        return TableStyle(style)
+
+    # PDF に並べる部品（文章・表など）を、上から順にこのリストへ追加していきます
+    story = []
+    story.append(Paragraph("重複ファイル レポート", title_style))
+    story.append(Spacer(1, 4 * mm))
+    story.append(Paragraph(f"調べたフォルダ: {folder}", body_style))
+    story.append(Paragraph(f"作成日時: {datetime.now():%Y年%m月%d日 %H:%M}", body_style))
+    story.append(Paragraph("※ このツールはファイルを削除していません。", body_style))
+    story.append(Spacer(1, 6 * mm))
+
+    # ---- まとめ（全体の数字） ----
+    duplicate_file_count = sum(len(g["paths"]) for g in groups)
+    wasted_bytes = sum(g["size"] * (len(g["paths"]) - 1) for g in groups)
+
+    story.append(Paragraph("まとめ", heading_style))
+    story.append(Spacer(1, 2 * mm))
+    summary = Table(
+        [
+            ["項目", "結果"],
+            ["重複グループ数", f"{len(groups)} グループ"],
+            ["重複に含まれるファイル数", f"{duplicate_file_count} 個"],
+            ["削減できる可能性のある容量", f"{format_size(wasted_bytes)} ({wasted_bytes:,} バイト)"],
+        ],
+        colWidths=[70 * mm, 80 * mm],
+        hAlign="LEFT",
+    )
+    summary.setStyle(table_style([1]))
+    story.append(summary)
+    story.append(Spacer(1, 8 * mm))
+
+    if not groups:
+        story.append(Paragraph("重複しているファイルは見つかりませんでした。", body_style))
+    else:
+        # ---- グループごとの個数一覧 ----
+        story.append(Paragraph("グループごとの個数", heading_style))
+        story.append(Spacer(1, 2 * mm))
+        rows = [["グループ", "同じファイルの数", "1個あたりのサイズ", "削減できる容量"]]
+        for number, group in enumerate(groups, start=1):
+            count = len(group["paths"])
+            rows.append(
+                [
+                    str(number),
+                    f"{count} 個",
+                    format_size(group["size"]),
+                    format_size(group["size"] * (count - 1)),
+                ]
+            )
+        count_table = Table(rows, colWidths=[25 * mm, 40 * mm, 45 * mm, 45 * mm], repeatRows=1, hAlign="LEFT")
+        count_table.setStyle(table_style([1, 2, 3]))
+        story.append(count_table)
+        story.append(Spacer(1, 8 * mm))
+
+        # ---- ファイルの一覧（パスとサイズ） ----
+        story.append(Paragraph("ファイルの一覧", heading_style))
+        story.append(Spacer(1, 2 * mm))
+        rows = [["グループ", "ファイルパス（調べたフォルダから見た場所）", "サイズ"]]
+        for number, group in enumerate(groups, start=1):
+            for path in group["paths"]:
+                # 長いフルパスの代わりに、調べたフォルダからの相対パスを表示して見やすくします
+                relative = os.path.relpath(path, folder)
+                rows.append([str(number), Paragraph(relative, cell_style), format_size(group["size"])])
+        # repeatRows=1 で、表がページをまたいでも見出し行が毎ページ表示されます
+        file_table = Table(rows, colWidths=[20 * mm, 120 * mm, 25 * mm], repeatRows=1, hAlign="LEFT")
+        file_table.setStyle(table_style([2]))
+        story.append(file_table)
+
+    # 用意した部品を A4 サイズの PDF に書き出します
+    document = SimpleDocTemplate(
+        pdf_path,
+        pagesize=A4,
+        leftMargin=18 * mm,
+        rightMargin=18 * mm,
+        topMargin=18 * mm,
+        bottomMargin=18 * mm,
+        title="重複ファイル レポート",
+    )
+    document.build(story)
+    print(f"PDF ファイルに保存しました: {pdf_path}")
+
+
 def main():
     """プログラムの入り口です。ここから処理が始まります。"""
     # コマンドラインから受け取る引数の設定
@@ -235,6 +390,10 @@ def main():
     parser.add_argument(
         "--csv",
         help="結果を保存する CSV ファイル名（省略すると duplicates_年月日_時分秒.csv）",
+    )
+    parser.add_argument(
+        "--pdf",
+        help="結果を PDF ファイルにも保存したいときに、そのファイル名を指定します（reportlab が必要）",
     )
     args = parser.parse_args()
 
@@ -253,6 +412,10 @@ def main():
     print_report(groups)
     print()
     save_csv(groups, csv_path)
+
+    # --pdf が指定されたときだけ PDF も作ります
+    if args.pdf:
+        save_pdf(groups, args.pdf, folder)
 
 
 # このファイルを直接実行したときだけ main() を呼び出します。
