@@ -10,7 +10,12 @@
 
 ※ このツールはファイルを「削除しません」。レポートを作るだけなので安心して使えます。
 
-使い方（ターミナル / コマンドプロンプトで実行します）:
+かんたんな使い方（おすすめ）:
+    このファイルをダブルクリックするか、「python find_duplicates.py」とだけ入力して実行します。
+    フォルダを選ぶ画面が出るので、調べたいフォルダを選ぶだけで
+    PDF と CSV のレポートがデスクトップに保存され、PDF が自動で開きます。
+
+細かく指定する使い方（ターミナル / コマンドプロンプトで実行します）:
     python find_duplicates.py 調べたいフォルダ
     python find_duplicates.py 調べたいフォルダ --csv 結果.csv
     python find_duplicates.py 調べたいフォルダ --pdf 結果.pdf   （PDF も作る場合）
@@ -39,6 +44,7 @@ import argparse  # コマンドラインの引数（フォルダ名など）を�
 import csv  # CSV ファイルを書き出すため
 import hashlib  # ハッシュ値（ファイルの指紋）を計算するため
 import os  # フォルダの中を順番に調べるため
+import subprocess  # reportlab のインストールや、できた PDF を開くため
 import sys  # エラー時にプログラムを終了するため
 from collections import defaultdict  # 「グループ分け」を簡単に書くための便利な辞書
 from datetime import datetime  # CSV のファイル名に日時を入れるため
@@ -276,7 +282,7 @@ def save_pdf(groups, pdf_path, folder):
     except ImportError:
         print("[エラー] PDF を作るには reportlab が必要です。次のコマンドでインストールしてください:")
         print("    pip install reportlab")
-        return
+        return False
 
     font = register_japanese_font()
 
@@ -378,6 +384,129 @@ def save_pdf(groups, pdf_path, folder):
     )
     document.build(story)
     print(f"PDF ファイルに保存しました: {pdf_path}")
+    return True
+
+
+# ===============================================================
+# ここから下は「かんたんモード」（引数なしで実行したとき）の部品です
+# ===============================================================
+
+
+def ensure_reportlab():
+    """
+    PDF 作成に必要な reportlab が入っているか確認し、
+    入っていなければインストールするか質問します。
+    使える状態になったら True、使えなければ False を返します。
+    """
+    try:
+        import reportlab  # noqa: F401  （入っているか確認するためだけに読み込みます）
+
+        return True
+    except ImportError:
+        pass
+
+    print("PDF を作るには「reportlab」というライブラリが必要ですが、まだ入っていません。")
+    answer = input("今インストールしますか？ (y = はい / n = いいえ): ").strip().lower()
+    if answer not in ("y", "yes", "はい"):
+        print("インストールしませんでした。今回は CSV だけ作ります。")
+        return False
+
+    # sys.executable は「今このプログラムを動かしている Python」の場所です。
+    # 「python -m pip install reportlab」と同じことを、プログラムの中から実行します。
+    print("インストールしています。少しお待ちください...")
+    result = subprocess.run([sys.executable, "-m", "pip", "install", "reportlab"])
+    if result.returncode != 0:
+        print("[警告] インストールに失敗しました。今回は CSV だけ作ります。")
+        return False
+
+    print("インストールが完了しました。")
+    return True
+
+
+def choose_folder():
+    """
+    フォルダを選ぶ画面を表示して、選ばれたフォルダのパスを返します。
+    キャンセルされたときは空文字（""）を返します。
+    """
+    try:
+        # tkinter は Python に最初から入っている、画面（ウィンドウ）を作るための部品です
+        import tkinter
+        from tkinter import filedialog
+
+        root = tkinter.Tk()
+        root.withdraw()  # 空っぽのメインウィンドウは表示しないようにします
+        root.attributes("-topmost", True)  # 選択画面がほかのウィンドウの後ろに隠れないようにします
+        folder = filedialog.askdirectory(title="重複ファイルを調べたいフォルダを選んでください")
+        root.destroy()
+        return folder
+    except Exception:
+        # 画面が出せない環境では、キーボードでフォルダのパスを入力してもらいます
+        return input("調べたいフォルダのパスを入力してください: ").strip().strip('"')
+
+
+def find_output_folder():
+    """レポートを保存する場所を決めます。デスクトップがあればデスクトップ、なければホームフォルダです。"""
+    home = os.path.expanduser("~")
+    # Windows では OneDrive の中にデスクトップがあることも多いので、いくつかの候補を順に確認します
+    candidates = [
+        os.path.join(home, "Desktop"),
+        os.path.join(home, "OneDrive", "Desktop"),
+        os.path.join(home, "OneDrive", "デスクトップ"),
+        os.path.join(home, "デスクトップ"),
+    ]
+    for candidate in candidates:
+        if os.path.isdir(candidate):
+            return candidate
+    return home
+
+
+def open_file(path):
+    """できたファイルを、パソコンの標準アプリ（PDF ビューアなど）で開きます。"""
+    try:
+        if sys.platform.startswith("win"):  # Windows
+            os.startfile(path)
+        elif sys.platform == "darwin":  # Mac
+            subprocess.run(["open", path])
+        else:  # Linux など
+            subprocess.run(["xdg-open", path])
+    except Exception:
+        # 開けなくてもレポートは保存済みなので、場所だけ案内します
+        print(f"ファイルを自動で開けませんでした。次の場所から開いてください: {path}")
+
+
+def run_easy_mode():
+    """引数なしで実行されたときの「かんたんモード」です。"""
+    print("=" * 70)
+    print("重複ファイル検索ツール（ファイルの削除は行いません）")
+    print("=" * 70)
+
+    can_make_pdf = ensure_reportlab()
+
+    print()
+    print("フォルダを選ぶ画面を開きます...")
+    folder = choose_folder()
+    if not folder:
+        print("フォルダが選ばれなかったので終了します。")
+        return
+
+    folder = os.path.abspath(os.path.expanduser(folder))
+    if not os.path.isdir(folder):
+        print(f"[エラー] フォルダが見つかりません: {folder}")
+        return
+
+    # 保存するファイル名に日時を入れて、前回のレポートを上書きしないようにします
+    output_folder = find_output_folder()
+    base_name = f"重複ファイルレポート_{datetime.now():%Y%m%d_%H%M%S}"
+    csv_path = os.path.join(output_folder, base_name + ".csv")
+    pdf_path = os.path.join(output_folder, base_name + ".pdf")
+
+    groups = find_duplicates(folder)
+    print_report(groups)
+    print()
+    save_csv(groups, csv_path)
+
+    if can_make_pdf and save_pdf(groups, pdf_path, folder):
+        open_file(pdf_path)
 
 
 def main():
@@ -386,7 +515,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="指定フォルダ以下の重複ファイル（中身が同じファイル）を探してレポートします。削除は行いません。"
     )
-    parser.add_argument("folder", help="調べたいフォルダのパス")
+    # nargs="?" は「この引数は省略してもよい」という意味です
+    parser.add_argument("folder", nargs="?", help="調べたいフォルダのパス（省略するとフォルダを選ぶ画面が出ます）")
     parser.add_argument(
         "--csv",
         help="結果を保存する CSV ファイル名（省略すると duplicates_年月日_時分秒.csv）",
@@ -396,6 +526,15 @@ def main():
         help="結果を PDF ファイルにも保存したいときに、そのファイル名を指定します（reportlab が必要）",
     )
     args = parser.parse_args()
+
+    # フォルダが指定されていなければ「かんたんモード」で動かします
+    if args.folder is None:
+        try:
+            run_easy_mode()
+        finally:
+            # ダブルクリックで実行したとき、結果を読む前に画面が閉じないように待ちます
+            input("\nEnter キーを押すと終了します...")
+        return
 
     # 「~」（ホームフォルダ）を展開し、絶対パス（フルパス）に変換します
     folder = os.path.abspath(os.path.expanduser(args.folder))
